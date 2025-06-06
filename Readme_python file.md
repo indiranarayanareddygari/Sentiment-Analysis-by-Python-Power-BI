@@ -1,25 +1,24 @@
-Sentiment Analysis of Airline Tweets -Part 1 – Powered by Python
+# **✈️ Sentiment Analysis of Airline Tweets - Part 1 – Powered by Python**
 
-# =============================
-# Dataset Loading and Cleaning
-# =============================
+Analyze airline customer sentiment using tweet data and natural language processing techniques with Python.
 
+---
+
+## 📁 **1. Dataset Loading and Cleaning**
+
+```python
 import pandas as pd
 import numpy as np
 
 # Load the dataset
 df = pd.read_csv("Tweets.csv")
 
-# Display basic info about the dataset (column types, non-null counts)
+# Display basic info
 df.info()
-
-# Display the first few rows for a quick preview
 df.head()
 
-# Select relevant columns for sentiment analysis
+# Select and rename relevant columns
 df = df[['airline_sentiment', 'airline', 'text', 'tweet_created', 'retweet_count']]
-
-# Rename columns for readability and consistency
 df.rename(columns={
     'airline_sentiment': 'Sentiment',
     'airline': 'Airline',
@@ -28,72 +27,62 @@ df.rename(columns={
     'retweet_count': 'Retweets'
 }, inplace=True)
 
-# Check for missing values in the dataset
+# Handle missing values
 df.isnull().sum()
-
-# Drop rows with any missing values
 df.dropna(inplace=True)
 
-# Convert date column to datetime format for easier time-based analysis
+# Convert data types
 df['Date'] = pd.to_datetime(df['Date'])
-
-# Convert categorical columns to 'category' type to optimize memory and processing
 df['Sentiment'] = df['Sentiment'].astype('category')
 df['Airline'] = df['Airline'].astype('category')
 
-# Save the cleaned dataset to a new CSV file
+# Save cleaned data
 df.to_csv("Cleaned_Twitter_Sentiment.csv", index=False)
-
-# Check final structure after cleaning
 df.info()
+```
 
-# ===============================
-# Text Preprocessing & Scoring
-# ===============================
+---
 
+## 🧼 **2. Text Preprocessing**
+
+```python
 import re
 import string
 import nltk
 from nltk.corpus import stopwords
-from textblob import TextBlob
-
-# Download required NLTK resources
 nltk.download('stopwords')
 nltk.download('punkt')
 
-# Define English stopwords
 stop_words = set(stopwords.words('english'))
 
-# Function to clean tweet text
 def clean_text(text):
-    text = text.lower()  # Convert to lowercase
-    text = re.sub(r"http\S+|www\S+|https\S+", '', text, flags=re.MULTILINE)  # Remove URLs
-    text = re.sub(r'\@w+|\#','', text)  # Remove mentions and hashtags
-    text = re.sub(r'[%s]' % re.escape(string.punctuation), '', text)  # Remove punctuation
-    text = re.sub(r'\d+', '', text)  # Remove numbers
-    text = ' '.join([word for word in text.split() if word not in stop_words])  # Remove stopwords
+    text = text.lower()
+    text = re.sub(r"http\S+|www\S+|https\S+", '', text)
+    text = re.sub(r'\@w+|\#','', text)
+    text = re.sub(r'[%s]' % re.escape(string.punctuation), '', text)
+    text = re.sub(r'\d+', '', text)
+    text = ' '.join([word for word in text.split() if word not in stop_words])
     return text
 
-# Apply text cleaning to each tweet
 df['Clean_Tweet'] = df['Tweet'].apply(clean_text)
+```
 
-# ===============================
-# Sentiment Scoring with TextBlob
-# ===============================
+---
 
-# Function to extract polarity score (-1 to 1)
+## 🧠 **3. Sentiment Scoring with TextBlob**
+
+```python
+from textblob import TextBlob
+
 def get_polarity(text):
     return TextBlob(text).sentiment.polarity
 
-# Function to extract subjectivity score (0 to 1)
 def get_subjectivity(text):
     return TextBlob(text).sentiment.subjectivity
 
-# Apply sentiment scoring
 df['Polarity'] = df['Clean_Tweet'].apply(get_polarity)
 df['Subjectivity'] = df['Clean_Tweet'].apply(get_subjectivity)
 
-# Reclassify sentiment based on polarity score
 def polarity_to_sentiment(p):
     if p > 0:
         return 'positive'
@@ -102,48 +91,50 @@ def polarity_to_sentiment(p):
     else:
         return 'neutral'
 
-# Create new sentiment label from polarity
 df['Polarity_Sentiment'] = df['Polarity'].apply(polarity_to_sentiment)
 
-# Save the final dataset with scores
+# Save to CSV
 df.to_csv("Twitter_Sentiment_Analyzed.csv", index=False)
+```
 
-# =============================
-# Exploratory Data Analysis
-# =============================
+---
 
-# Basic dataset overview
+## 📊 **4. Exploratory Data Analysis (EDA)**
+
+```python
+# Dataset overview
 print("Shape:", df.shape)
 print(df.info())
 print(df['Polarity_Sentiment'].value_counts())
+```
 
-# =============================
-# Sentiment Distribution Plot
-# =============================
+---
 
+## 📈 **5. Sentiment Distribution Plot**
+
+```python
 import seaborn as sns
 import matplotlib.pyplot as plt
 
-# Plot sentiment class distribution
 sns.countplot(data=df, x='Polarity_Sentiment', palette='Set2')
 plt.title('Tweet Sentiment Distribution')
 plt.xlabel('Sentiment')
 plt.ylabel('Count')
 plt.savefig('Tweet Sentiment Distribution.png', dpi=300, bbox_inches='tight')
 plt.show()
+```
 
-# =============================
-# WordCloud by Sentiment
-# =============================
+---
 
+## ☁️ **6. WordClouds by Sentiment**
+
+```python
 from wordcloud import WordCloud
 
-# Prepare text grouped by sentiment
 positive = ' '.join(df[df['Polarity_Sentiment'] == 'positive']['Clean_Tweet'])
 neutral = ' '.join(df[df['Polarity_Sentiment'] == 'neutral']['Clean_Tweet'])
 negative = ' '.join(df[df['Polarity_Sentiment'] == 'negative']['Clean_Tweet'])
 
-# Create subplots for each sentiment word cloud
 plt.figure(figsize=(15, 5))
 
 plt.subplot(1, 3, 1)
@@ -161,11 +152,13 @@ plt.title('Negative')
 plt.tight_layout()
 plt.savefig('sentiment_wordclouds.png', dpi=300, bbox_inches='tight')
 plt.show()
+```
 
-# =============================
-# Polarity & Subjectivity Distribution
-# =============================
+---
 
+## 📉 **7. Polarity & Subjectivity Distribution**
+
+```python
 plt.figure(figsize=(12, 5))
 
 plt.subplot(1, 2, 1)
@@ -179,19 +172,24 @@ plt.title('Subjectivity Score Distribution')
 plt.tight_layout()
 plt.savefig('polarity_subjectivity_distribution.png', dpi=300, bbox_inches='tight')
 plt.show()
+```
 
-# =============================
-# Scatter Plot: Polarity vs Subjectivity
-# =============================
+---
 
+## 🔍 **8. Scatter Plot: Polarity vs Subjectivity**
+
+```python
 sns.scatterplot(data=df, x='Polarity', y='Subjectivity', hue='Polarity_Sentiment', palette='Set2')
 plt.title('Polarity vs Subjectivity by Sentiment')
 plt.savefig('polarity_vs_subjectivity_scatter.png', dpi=300, bbox_inches='tight')
 plt.show()
+```
 
-## ✍️ Author
-**Indira 
+---
 
-(https://www.linkedin.com/in/indira-narayanareddygari-analyst061294/)
+## 👩‍💻 **Author**
 
-**Data Analyst | Power BI Developer | SQL & Excel Specialist | Python Enthusiast**
+**Indira Narayanareddygari**
+📎 [LinkedIn](https://www.linkedin.com/in/indira-narayanareddygari-analyst061294/)
+💼 *Data Analyst | Power BI Developer | SQL & Excel Specialist | Python Enthusiast*
+
