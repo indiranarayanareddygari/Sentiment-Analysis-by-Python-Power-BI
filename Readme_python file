@@ -188,3 +188,10 @@ sns.scatterplot(data=df, x='Polarity', y='Subjectivity', hue='Polarity_Sentiment
 plt.title('Polarity vs Subjectivity by Sentiment')
 plt.savefig('polarity_vs_subjectivity_scatter.png', dpi=300, bbox_inches='tight')
 plt.show()
+
+## ✍️ Author
+**Indira 
+
+(https://www.linkedin.com/in/indira-narayanareddygari-analyst061294/)
+
+**Data Analyst | Power BI Developer | SQL & Excel Specialist | Python Enthusiast**
