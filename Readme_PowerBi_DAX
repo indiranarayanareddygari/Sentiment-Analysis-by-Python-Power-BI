@@ -1,36 +1,77 @@
-# 📊 Power BI Dashboard – Sentiment Analysis (Part 2)
 
-This is the Power BI component of the **Sentiment Analysis Project**, built using the cleaned and processed tweet sentiment data from Part 1 (Python NLP).
+📊 Power BI Dashboard – Sentiment Analysis (Part 2)
+This is the Power BI component of the complete Sentiment Analysis Project, built on top of the output from the Python NLP phase (Part 1). It transforms sentiment-labeled tweets into an interactive business dashboard using advanced DAX and visualization techniques.
 
-## 🚀 Key Features
+🚀 Key Features
+✅ Data Modeling
+Primary Dataset: Twitter_Sentiment_Analyzed.csv
 
-### ✅ Data Model & Modeling
-- Built on cleaned CSV: `Twitter_Sentiment_Analyzed.csv`
-- Connected with a custom `CalendarTable` for time intelligence
-- Created proper **1-to-many relationships** for clean filters
+Created a Calendar Table using DAX to enable time-based slicing.
 
-### 📈 Visual Highlights
+Established 1-to-many relationships between CalendarTable[Date] and Twitter_Sentiment_Analyzed[Date].
 
-| Section        | Visual Type         | Description |
-|----------------|---------------------|-------------|
-| KPIs           | Card                | Tweet Count, Positive %, Avg Length, Avg Retweets |
-| Trend Analysis | Line Chart          | Sentiment over time using CalendarTable |
-| Sentiment Split| Donut Chart         | Overall sentiment distribution |
-| Airline-wise   | Stacked Bar Chart   | Sentiment by Airline |
-| Text Insights  | Word Cloud          | Most used words per sentiment (Advanced Visual) |
-| Deep Dive      | Table/Matrix        | Full tweet details with sentiment |
-| Interactions   | Slicers             | Filters for Airline, Sentiment, Date |
+Enabled time intelligence, custom formatting, and clean slicers.
 
----
+📅 Calendar Table (DAX Fields)
+dax
+Copy
+Edit
+Month = FORMAT(CalendarTable[Date], "MMMM")
+MonthYear = FORMAT(CalendarTable[Date], "MMM YYYY")
+Weekday = FORMAT(CalendarTable[Date], "dddd")
+Year = YEAR(CalendarTable[Date])
 
-## 🧠 DAX Measures (Examples)
 
-```dax
-Positive Count = CALCULATE(COUNTROWS(Twitter_Sentiment_Analyzed), Twitter_Sentiment_Analyzed[Polarity_Sentiment] = "positive")
+📈 Dashboard Visual Highlights
+Section	Visual Type	Description
+🔹 Top KPIs	Card Visuals	Count of Tweets, Positive Tweets %, Avg Tweet Length, Avg Retweets
+🔹 Trends	Line Chart	Sentiment trends over time (CalendarTable[Date])
+🔹 Sentiment Split	Donut Chart	Overall sentiment distribution
+🔹 Airline Breakdown	Stacked Bar	Sentiment distribution per airline
+🔹 Word Cloud	WordCloud Visual (Marketplace)	Shows frequently used words from tweets
+🔹 Details View	Table / Matrix	Complete tweet-level data for drilldown
+🔹 Filters	Slicers	Sentiment, Airline, and Date Range slicers
 
-% Positive = DIVIDE([Positive Count], [Total Tweets], 0)
+🧠 Custom DAX Measures
+✅ Tweet Sentiment KPIs
 
-Avg Tweet Length = AVERAGEX(Twitter_Sentiment_Analyzed, LEN(Twitter_Sentiment_Analyzed[Clean_Tweet]))
+Positive Tweets = 
+CALCULATE(COUNTROWS(Twitter_Sentiment_Analyzed),
+Twitter_Sentiment_Analyzed[Polarity_Sentiment] = "positive")
 
-Avg Retweets = AVERAGE(Twitter_Sentiment_Analyzed[Retweets])
+Negative Tweets = 
+CALCULATE(COUNTROWS(Twitter_Sentiment_Analyzed),
+Twitter_Sentiment_Analyzed[Polarity_Sentiment] = "negative")
 
+Neutral Tweets = 
+CALCULATE(COUNTROWS(Twitter_Sentiment_Analyzed),
+Twitter_Sentiment_Analyzed[Polarity_Sentiment] = "neutral")
+
+PercentPositive = 
+DIVIDE(
+    [Positive Tweets],
+    COUNTROWS(Twitter_Sentiment_Analyzed)
+)
+✅ Tweet Insights
+Tweet Length = LEN(Twitter_Sentiment_Analyzed[Clean_Tweet])
+
+AverageTweetLength = 
+AVERAGE(Twitter_Sentiment_Analyzed[Tweet Length])
+
+AverageRetweets = 
+AVERAGE(Twitter_Sentiment_Analyzed[Retweets])
+
+
+✅ Date Enhancements for Filtering
+
+FormattedDate = FORMAT(Twitter_Sentiment_Analyzed[Date], "DD-MM-YYYY")
+Tweet Day = FORMAT(Twitter_Sentiment_Analyzed[Date], "dddd")
+✨ Advanced Features Implemented
+Feature	Purpose
+🛠 Calendar Table	Enables smooth time-based filtering (Month, Year, Weekday)
+📌 Drillthrough Pages	Lets user right-click on Airline → View tweet-level detail page
+💡 Tooltip Pages	Hover over chart → Show Avg Tweet Length, Retweets, etc.
+🧩 Word Cloud Visual	Integrated via Power BI Marketplace
+🔗 Relationships	Ensured clean and optimized relationships for accurate cross-filtering
+
+🔗 Power BI Report Link https://app.powerbi.com/groups/me/reports/ccb8dca9-17dc-4f31-989e-aee9c885ae2d/02719f4635e2a51f1ae7?experience=power-bi
