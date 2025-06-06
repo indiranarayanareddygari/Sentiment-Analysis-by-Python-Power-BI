@@ -1,1 +1,36 @@
+# 📊 Power BI Dashboard – Sentiment Analysis (Part 2)
+
+This is the Power BI component of the **Sentiment Analysis Project**, built using the cleaned and processed tweet sentiment data from Part 1 (Python NLP).
+
+## 🚀 Key Features
+
+### ✅ Data Model & Modeling
+- Built on cleaned CSV: `Twitter_Sentiment_Analyzed.csv`
+- Connected with a custom `CalendarTable` for time intelligence
+- Created proper **1-to-many relationships** for clean filters
+
+### 📈 Visual Highlights
+
+| Section        | Visual Type         | Description |
+|----------------|---------------------|-------------|
+| KPIs           | Card                | Tweet Count, Positive %, Avg Length, Avg Retweets |
+| Trend Analysis | Line Chart          | Sentiment over time using CalendarTable |
+| Sentiment Split| Donut Chart         | Overall sentiment distribution |
+| Airline-wise   | Stacked Bar Chart   | Sentiment by Airline |
+| Text Insights  | Word Cloud          | Most used words per sentiment (Advanced Visual) |
+| Deep Dive      | Table/Matrix        | Full tweet details with sentiment |
+| Interactions   | Slicers             | Filters for Airline, Sentiment, Date |
+
+---
+
+## 🧠 DAX Measures (Examples)
+
+```dax
+Positive Count = CALCULATE(COUNTROWS(Twitter_Sentiment_Analyzed), Twitter_Sentiment_Analyzed[Polarity_Sentiment] = "positive")
+
+% Positive = DIVIDE([Positive Count], [Total Tweets], 0)
+
+Avg Tweet Length = AVERAGEX(Twitter_Sentiment_Analyzed, LEN(Twitter_Sentiment_Analyzed[Clean_Tweet]))
+
+Avg Retweets = AVERAGE(Twitter_Sentiment_Analyzed[Retweets])
 
