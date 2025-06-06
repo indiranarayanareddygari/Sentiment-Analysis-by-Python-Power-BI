@@ -1,8 +1,8 @@
-
--- 📊 Power BI Dashboard – Sentiment Analysis (Part 2)
+## 📊 Power BI Dashboard – Sentiment Analysis (Part 2)
 This is the Power BI component of the complete Sentiment Analysis Project, built on top of the output from the Python NLP phase (Part 1). It transforms sentiment-labeled tweets into an interactive business dashboard using advanced DAX and visualization techniques.
 
-🚀 Key Features
+
+## 🚀 Key Features
 ✅ Data Modeling
 Primary Dataset: Twitter_Sentiment_Analyzed.csv
 
